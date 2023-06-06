@@ -1,0 +1,19 @@
+#led blinking
+#GPIO = General purpose input/output.
+#GPIO2 pin_no(3)    #3v pin_no(1)
+#GPIO3 pin_no(5)    #5v pin_no(2)
+#GPIO4 pin_no(7)    #groung pin_no(6,14,20)
+#led's long leg possitive - connect to GPIO3 pin 
+#short leg - connect to Ground 
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(3,GPIO.OUT)
+GPIO.output(3,False)
+time.sleep(10)
+while True:
+    GPIO.output(3,True)
+    time.sleep(1)
+    GPIO.output(3,False)
+    time.sleep(1)
+    

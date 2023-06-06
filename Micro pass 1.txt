@@ -1,0 +1,261 @@
+*************************************************************************
+MNT class
+
+public class MNT {
+    String macro_name;
+    int mdtc;
+
+    public MNT(String m, int mdp) {
+        macro_name = m;
+        mdtc = mdp;
+    }
+}
+
+**************************************************************************
+pass 1
+
+
+import java.io.*;
+import java.util.*;
+import static java.lang.System.out;
+
+public class Pass1 {
+	static List<MNT> mnt = new LinkedList<MNT>();
+	static List<String> ala = new LinkedList<String>();
+	static List<String> mdt = new LinkedList<String>();
+	static int mdtc = 0;
+	static int mntc = 0;
+	static BufferedReader br;
+	static BufferedWriter bw,bws;
+	
+	public static void main(String args[]) throws IOException {
+		String line;
+		br = new BufferedReader(new FileReader("F:\\AVCOE\\College\\TE\\SEM-5\\SPOSL\\03-04\\Macro Pass 1\\src\\IP"));
+        bw = new BufferedWriter(new FileWriter("OP.txt")); 
+        while((line = br.readLine())!=null) {
+        	String arr[] = line.split(" ");
+        	if(arr[0].equals("MACRO")) {
+        		process_def(line);
+        	}
+        	else {
+        		bw.write(line+"\n");
+        	}
+        }
+        System.out.println("********ALA**********");
+    	printala();	
+    	System.out.println("********MNT**********");
+    	printmnt();
+    	System.out.println("********MDT**********");
+    	printmdt();
+		bw.close();
+	}
+	
+	
+	
+	
+	private static void printala() throws IOException {
+		// TODO Auto-generated method stub
+		bws = new BufferedWriter(new FileWriter("ALA.txt"));
+		int i = 0;
+		for(String l : ala) {
+			bws.write(l+"\n");
+			System.out.println(i + " " + l);
+			i++;
+		}
+		bws.close();
+	}
+
+
+
+
+	private static void printmnt() throws IOException {
+		// TODO Auto-generated method stub
+		bws = new BufferedWriter(new FileWriter("MNT.txt"));
+		int i = 0;
+		for(MNT l : mnt) {
+			bws.write(l.macro_name+"\t"+l.mdtc+"\n");
+			System.out.println(i + " " + l.macro_name+" "+l.mdtc);
+			i++;
+		}
+		bws.close();
+	}
+
+
+
+
+	private static void printmdt() throws IOException {
+		// TODO Auto-generated method stub
+		bws = new BufferedWriter(new FileWriter("MDT.txt"));
+		int i = 0;
+		for(String c : mdt) {
+			bws.write(c+"\n");
+			System.out.println(i + " " + c);
+			i++;
+		}
+		bws.close();
+	}
+
+
+
+
+	private static void process_def(String line) throws IOException{
+		// TODO Auto-generated method stub
+		String l = br.readLine();
+		String name[] = l.split(" ");
+		mnt.add(new MNT(name[0],mdtc));
+		mntc++;
+		String arg[] = name[1].split(",");
+		for(int i = 0 ; i < arg.length; i++) {
+			ala.add(arg[i]);
+		}
+		mdt.add(l);
+		mdtc++;
+		while(!(l.equalsIgnoreCase("MEND"))) {
+			l = br.readLine();
+			//int i = 0;
+			int ind = 0;
+			String opline = "";
+			if((ind = l.indexOf("&"))>0) {
+				String arr1[] = l.split(" ");
+				opline = opline + arr1[0];
+				String merg[] = arr1[1].split(",");
+				opline = opline + " "+merg[0];
+				for(int i = 0;i<merg.length;i++) {
+					if(merg[i].startsWith("&")) {
+						ind = ala.indexOf(merg[i]);
+						opline = opline + " #"+ind;
+					}
+				}
+			}
+			else {
+				opline = l;
+			}
+			mdt.add(opline);
+			mdtc++;
+		}
+	}
+}
+/*  static List<MNT> mnt = new LinkedList<MNT>();
+    static List<String> ala = new LinkedList<String>();
+    static List<String> mdt = new LinkedList<String>();
+    static int mntc = 0;
+    static int mdtc = 0;
+    static BufferedReader br;
+    static BufferedWriter bw, BWS;
+
+    public static void main(String[] args) throws Exception, IOException {
+        String line;
+        br = new BufferedReader(new FileReader("F:\\AVCOE\\College\\TE\\SEM-5\\SPOSL\\03-04\\Macro Pass 1\\src\\IP"));
+        bw = new BufferedWriter(new FileWriter("OP.txt"));
+
+        while ((line = br.readLine()) != null) {
+            String parts[] = line.split("\\s+");
+            if (parts[0].equals("MACRO")) {
+                process_def(line);
+            } else {
+                bw.write(line + "\n");
+            }
+        }
+
+        System.out.println("ALA");
+        printala();
+        System.out.println("MNT");
+        printmnt();
+        System.out.println("MDT");
+        printmdt();
+        bw.close();
+    }
+
+    static void printala() throws IOException {
+        BWS = new BufferedWriter(new FileWriter("ALA.txt"));
+        int i = 0;
+        for (String l : ala) {
+            System.out.println(i + " " + l);
+            BWS.write(l + "\n");
+            // bw.write(i+" "+l+"\n");
+            i++;
+        }
+        out.println(" ");
+        BWS.close();
+    }
+
+    static void printmnt() throws IOException {
+        BWS = new BufferedWriter(new FileWriter("MNT.txt"));
+        int i = 0;
+        for (MNT l : mnt) {
+            System.out.println(i + " " + l.macro_name + " " + l.mdtc);
+            BWS.write(l.macro_name + " " + l.mdtc + "\n");
+            // bw.write(i+" "+l.macro_name+" "+l.mdtc+"\n");
+            i++;
+        }
+        out.println();
+        BWS.close();
+    }
+
+    static void printmdt() throws IOException {
+        BWS = new BufferedWriter(new FileWriter("MDT.txt"));
+        int i = 0;
+        for (String l : mdt) {
+            System.out.println(i + " " + l);
+            // bw.write(i+" "+l+"\n");
+            BWS.write(l + "\n");
+            i++;
+        }
+        out.println();
+        BWS.close();
+    }
+
+    static void process_def(String line) throws IOException {
+        String l = br.readLine();
+        //System.out.println(l);
+        String tk[] = l.split(" ");
+        mnt.add(new MNT(tk[0], mdtc));
+        mntc++;
+        String args[] = tk[1].split(",");
+        for (int i = 0; i < args.length; i++) {
+            ala.add((args[i]));
+
+        }
+        mdt.add(l);
+        mdtc++;
+        while (!l.equalsIgnoreCase("MEND")) {
+            int ind;
+            int i = 0;
+            String opline = "";
+            l = br.readLine();
+            if ((ind = l.indexOf("&")) > 0) {  System.out.println(l +"\t"+l.indexOf("&") );
+                String wrd[] = l.split("\\s+");
+                opline = opline + " " + wrd[0];
+                String margs[] = wrd[1].split(",");
+                opline = opline + " " + margs[0];
+                // System.out.println(margs.length);
+                while (i < margs.length) {
+                    if (margs[i].startsWith("&")) {
+                        ind = ala.indexOf(margs[i]);
+                        opline = opline + " #" + ind;
+                    }
+                    i++;
+                }
+            } else {
+                opline = l;
+            }
+            mdt.add(opline);
+            mdtc++;
+        }
+    }
+}*/
+
+*********************************************************************************
+input txt.
+
+MACRO
+INCR &X,&Y
+ADD AREG,&X
+SUB BREG,&Y
+MUL AREG A
+MEND
+START
+INCR A,B
+A DS 1
+B DS 1
+END
